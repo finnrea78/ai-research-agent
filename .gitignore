@@ -1,0 +1,5 @@
+context/delivery_config.md
+.env
+output/*.md
+output/*.html
+!output/.gitkeep
