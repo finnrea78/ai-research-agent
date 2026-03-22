@@ -59,6 +59,24 @@ Write the digest to `output/YYYY-MM-DD-digest.md` using this structure:
 
 ---
 
+## AI in the Wild
+
+### Startups & Funding
+- **[Company Name](URL)** — [What they build]. Raised $[amount] [round]. *[Source]*
+
+### Open-Source Projects
+
+| Project | Mission | Stars | Language |
+|---------|---------|-------|----------|
+| [name](URL) | One-line mission | N | Language |
+
+### Deployments & Case Studies
+- **[Company](URL)** — [What they deployed, outcome]. *[Source]*
+
+> Omit any subsection that has no items. Do not show empty headings.
+
+---
+
 ## Discovered Sources
 
 These sources were found during this scan and are not in the seed list:
@@ -96,6 +114,7 @@ Replace template placeholders:
 - `{{PODCASTS}}` → rendered podcasts table
 - `{{REPOS}}` → rendered repos table
 - `{{NEWS}}` → rendered news list
+- `{{AI_IN_THE_WILD}}` → rendered AI in the Wild section
 - `{{DISCOVERED}}` → rendered discovered sources
 - `{{STATS}}` → scan metadata (sources scanned, items passed, threshold)
 

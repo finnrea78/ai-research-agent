@@ -47,11 +47,33 @@ How fresh is this?
 | 1 | Published this month |
 | 0 | Older than a month |
 
+### Category-Specific Relevance Notes
+
+- For `ai_in_the_wild` items: score 7-8 if they involve AI engineering tools/infra, score 5-6 if general AI business, score 3-4 if tangentially about AI engineering
+
+### Freshness Bonus (GitHub repos only)
+
+Apply AFTER computing the base score (Relevance + Signal Quality + Timeliness). This modifier does NOT change the 25-point max for the base score, but is added on top.
+
+| Condition | Bonus |
+|-----------|-------|
+| GitHub repo created in the last 30 days | +2 |
+| GitHub repo created in the last 31-90 days | +1 |
+| GitHub repo older than 90 days with only a minor update | -1 |
+
+**Rules:**
+- Only applies to items with `source_type: github`
+- Tracked separately in output as `freshness_bonus: N`
+- Effective score = base score + freshness bonus
+- Threshold comparisons (15 to pass, 20 for highlights) use the effective score
+- Maximum effective score is 27 (25 base + 2 freshness bonus)
+
 ---
 
 ## Step 2: Apply Threshold
 
-- **Total score = Relevance + Signal Quality + Timeliness** (max 25)
+- **Base score = Relevance + Signal Quality + Timeliness** (max 25)
+- **Effective score = base score + freshness bonus** (max 27, only applies to GitHub repos)
 - **Threshold:** Items scoring **15 or higher** make the digest
 - **Highlight threshold:** Items scoring **20 or higher** get highlight status
 
@@ -70,6 +92,7 @@ Sort passing items into these categories:
 | **Podcasts** | Podcast episodes that passed the filter |
 | **Repos & Tools** | GitHub repos, tools, and frameworks |
 | **News & Analysis** | Blog posts, articles, announcements |
+| **AI in the Wild** | Items with `source_type: ai_in_the_wild` — startups, OSS projects, deployments |
 | **Discovered Sources** | Items with `discovered: true` — new sources not in the seed list |
 
 Within each category, sort by total score (highest first).
@@ -83,6 +106,11 @@ For the **Highlights** (top 3-5 items), add extra context:
 - **Why this matters:** 1-2 sentences explaining significance for AI practitioners
 - **Key takeaway:** The single most important point
 - **Action item:** What the reader might want to do (listen, read, try, watch)
+
+For **AI in the Wild** items, add:
+- **What they're building:** 1 sentence on the product/project
+- **Why it's interesting:** What makes this notable vs. the hundreds of other AI startups/projects
+- **Stage:** Funding stage, user count, or project maturity
 
 For **Podcast** items, add:
 - Recommended listen time if long (e.g., "Key segment: 23:00-45:00")
@@ -105,6 +133,8 @@ repos_and_tools:
   - [filtered GitHub items]
 news_and_analysis:
   - [filtered news/blog items]
+ai_in_the_wild:
+  - [filtered startup/deployment/OSS items]
 discovered:
   - [discovered source items]
 metadata:

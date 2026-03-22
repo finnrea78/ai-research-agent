@@ -45,7 +45,10 @@ For each podcast in the seed list:
 ### Trending Repos
 1. Use **WebSearch** to search: `github trending [language] today` for Python, TypeScript, Rust
 2. Also search: `github trending AI LLM agent MCP`
-3. For each relevant repo found, record:
+3. Also search: `github new AI repos created:>YYYY-MM-DD` (where YYYY-MM-DD is 90 days ago)
+4. For repos created in the last 90 days, use the lower star threshold (100+ stars per sources.md)
+5. For repos older than 90 days, require 500+ stars
+6. For each relevant repo found, record:
 
 ```
 - title: repo-owner/repo-name
@@ -54,6 +57,8 @@ For each podcast in the seed list:
 - language: Primary language
 - description: Repo description
 - created: When the repo was created (new vs established)
+- age_days: Number of days since repo creation
+- is_fresh: true if created within last 90 days
 - snippet: What it does and why it's notable
 - source_type: github
 ```
@@ -62,6 +67,8 @@ For each podcast in the seed list:
 1. For each repo in the "Specific Repos to Watch" list in `context/sources.md`:
 2. Use **WebSearch** to search: `"[repo name]" release OR changelog OR update site:github.com [current month]`
 3. Only record if there's been activity in the last 7 days
+4. For watched repos (established), only record if there is a **major release, breaking change, or significant new feature** — skip minor patches and maintenance commits
+5. Check release tags and changelogs, not just commit activity
 
 ---
 
@@ -110,7 +117,38 @@ For each subreddit in the seed list:
 
 ---
 
-## Step 6: Discovery Search
+## Step 6: Scan AI in the Wild
+
+Search for AI startup activity, OSS project launches, and real-world deployments.
+
+1. Use **WebSearch** for these queries:
+   - `AI startup funding [current month] [current year]`
+   - `AI startup launch OR "AI company" launch [current month] [current year]`
+   - `site:techcrunch.com artificial intelligence [current month] [current year]`
+   - `site:producthunt.com AI OR "machine learning" [current month] [current year]`
+   - `"AI deployment" OR "AI case study" enterprise [current month] [current year]`
+   - `open source AI project launch [current month] [current year]`
+2. For each relevant finding, record:
+
+```
+- title: Item title
+- url: Link
+- date: YYYY-MM-DD
+- category: startup_funding | startup_launch | oss_project | business_deployment
+- snippet: 1-2 sentence summary focusing on concrete details
+- specifics: Funding amount / user count / deployment scale / team background (if available)
+- source_type: ai_in_the_wild
+```
+
+**Priority signals for AI in the Wild:**
+- Concrete numbers (funding amount, user counts, revenue) > vague announcements
+- Named companies with real products > stealth launches
+- Deployment case studies with metrics > "we're using AI" announcements
+- OSS projects with clear mission/readme > bare repos
+
+---
+
+## Step 7: Discovery Search
 
 Search for content NOT in the seed list:
 
@@ -119,6 +157,8 @@ Search for content NOT in the seed list:
    - `"MCP server" new github [current month]`
    - `"Claude Code" tips OR workflow OR tutorial [current month]`
    - `"LLM agent" framework launch [current month]`
+   - `"AI startup" launch OR seed OR "series A" [current month]`
+   - `open source AI project mission [current month]`
 2. For each new source found, record the same fields as above plus:
 
 ```
@@ -128,11 +168,11 @@ Search for content NOT in the seed list:
 
 ---
 
-## Step 7: Compile Raw Findings
+## Step 8: Compile Raw Findings
 
 Combine all findings into a single list. Pass this list to the `signal_filter` skill.
 
-**Expected output:** A list of 20-50 raw findings across all source types.
+**Expected output:** A list of 25-60 raw findings across all source types.
 
 If fewer than 10 findings are found, broaden search queries and try again.
 If more than 50 findings are found, that's fine — the signal filter will pare it down.
@@ -146,5 +186,6 @@ When running a full scan, launch searches in parallel where possible:
 - GitHub trending + watched repos can run in parallel
 - News searches can all run in parallel
 - Reddit searches can all run in parallel
+- AI in the Wild searches can all run in parallel
 
 Discovery searches should run AFTER the main scan, so you know what's already been found.

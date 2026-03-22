@@ -59,6 +59,7 @@ Daily digests are saved as `output/YYYY-MM-DD-digest.md` with these sections:
 
 1. **Highlights** — Top 3-5 items with "why this matters" context
 2. **Podcasts** — New episodes worth listening to
-3. **Repos & Tools** — Trending or notable AI repos
+3. **Repos & Tools** — Trending or notable AI repos (biased toward newer repos)
 4. **News & Analysis** — Blog posts, articles, announcements
-5. **Discovered Sources** — New sources found during this scan (not in seed list)
+5. **AI in the Wild** — Startups, OSS projects, real-world AI deployments
+6. **Discovered Sources** — New sources found during this scan (not in seed list)
