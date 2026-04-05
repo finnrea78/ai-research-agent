@@ -10,6 +10,7 @@ These topics are the highest priority. Content matching these areas scores highe
 - **MCP (Model Context Protocol)** — new servers, protocol updates, integrations
 - **LLM tooling** — prompt engineering tools, evaluation frameworks, observability
 - **AI-assisted development** — coding agents, IDE integrations, developer workflows
+- **Gemma 4** — Google DeepMind's open-weight multimodal model; updates to the 26B A4B / 31B variants, fine-tuning guides, inference optimisations, benchmark comparisons, and hybrid Claude + Gemma architectures
 
 ### Tier 2 — Strong Interest
 - **New model releases** — benchmarks, capabilities, pricing, availability

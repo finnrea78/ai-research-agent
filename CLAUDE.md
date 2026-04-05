@@ -21,7 +21,13 @@ ai-research-agent/
 │   ├── source_scanner.md            ← How to scan each source type
 │   ├── signal_filter.md             ← How to score and rank findings
 │   ├── digest_writer.md             ← How to compose the digest
-│   └── deliver.md                   ← How to send the digest
+│   ├── deliver.md                   ← How to send the digest
+│   └── gemma4_router.md             ← How to use Gemma 4 for token-efficient bulk ops
+├── gemma4/                          ← Gemma 4 integration (local open-weight model)
+│   ├── setup.sh                     ← One-command bootstrap (Ollama + LiteLLM)
+│   ├── litellm_config.yaml          ← Routes "haiku" alias → Gemma 4 locally
+│   ├── gemma_router.py              ← Smart routing library (Gemma vs Claude)
+│   └── gemma_mcp_server.py          ← MCP server: exposes Gemma tools to Claude
 ├── output/                          ← Daily digest archive (gitignored)
 └── templates/
     └── email_template.html          ← HTML email layout
@@ -40,8 +46,12 @@ ai-research-agent/
 | Write digest | Ranked findings (in memory) | `context/sources.md`, `context/delivery_config.md` | `digest_writer` |
 | Deliver digest | Latest `output/YYYY-MM-DD-digest.md`, `context/delivery_config.md` | `context/sources.md`, `context/topics.md` | `deliver` |
 | Full run | All `context/*.md` | Nothing | All skills in order |
+| Bulk summarise / compress | Large raw content in memory | `context/delivery_config.md` | `gemma4_router` |
+| Token optimisation | `skills/gemma4_router.md` | Everything else | `gemma4_router` |
 
 **Rule:** Skills execute in sequence: `source_scanner` → `signal_filter` → `digest_writer` → `deliver`. Each skill passes its output to the next.
+
+**Gemma 4 Rule:** When processing >10 sources or >8,000 tokens of raw content, read `skills/gemma4_router.md` and use Gemma 4 tools for bulk work before invoking Claude on the filtered subset. This reduces token costs by 80-95% on full digest runs.
 
 ---
 
@@ -50,6 +60,7 @@ ai-research-agent/
 - **"Scan sources"** → Read `context/sources.md` + `context/topics.md` → Use WebSearch to check each source → Return raw findings list
 - **"Full run"** → Execute all 4 skills in sequence → End with delivered email + saved digest file
 - **"Check [topic]"** → Read `context/topics.md` → Use WebSearch for that specific topic → Return quick summary (no email)
+- **"Optimise tokens"** / **"use Gemma"** → Read `skills/gemma4_router.md` → Start `gemma4/setup.sh` if Gemma not yet running → Apply Gemma 4 routing to current task
 
 ---
 

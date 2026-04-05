@@ -1,0 +1,72 @@
+# LiteLLM Proxy Configuration for Gemma 4 / Claude Hybrid Routing
+#
+# This proxy sits between the Claude Agent SDK and your LLM backends.
+# The SDK sends Anthropic Messages API requests; LiteLLM translates and routes them.
+#
+# Usage:
+#   litellm --config gemma4/litellm_config.yaml --port 4000
+#
+# Then set:
+#   export ANTHROPIC_BASE_URL=http://localhost:4000
+#   export ANTHROPIC_API_KEY=your-anthropic-key   # still needed for Claude routes
+
+model_list:
+
+  # ── Gemma 4 routes (cheap, fast, bulk operations) ────────────────────────────
+
+  # "haiku" alias → Gemma 4 26B A4B via local Ollama
+  # Use for: bulk file reading, summarisation, code review, extraction
+  # Cost: $0 (local) vs $0.80/$4.00 per 1M tokens for Claude Haiku
+  - model_name: claude-haiku-4-5
+    litellm_params:
+      model: ollama_chat/gemma4:26b
+      api_base: "http://localhost:11434"
+      drop_params: true
+
+  # "haiku" (dated variant) → same Gemma route
+  - model_name: claude-haiku-4-5-20251001
+    litellm_params:
+      model: ollama_chat/gemma4:26b
+      api_base: "http://localhost:11434"
+      drop_params: true
+
+  # Fallback: route haiku to OpenRouter if Ollama is unavailable
+  # Uncomment and set OPENROUTER_API_KEY to activate
+  # - model_name: claude-haiku-4-5-openrouter
+  #   litellm_params:
+  #     model: openrouter/google/gemma-4-26b-a4b-it
+  #     api_key: "os.environ/OPENROUTER_API_KEY"
+
+  # ── Claude routes (complex reasoning, architecture, safety-sensitive) ─────────
+
+  # "sonnet" → Claude Sonnet 4.6 (default workhorse)
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: anthropic/claude-sonnet-4-6
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+
+  # "opus" → Claude Opus 4.6 (highest capability)
+  - model_name: claude-opus-4-6
+    litellm_params:
+      model: anthropic/claude-opus-4-6
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+
+  # Fallback for any unmatched model name → Sonnet
+  - model_name: "*"
+    litellm_params:
+      model: anthropic/claude-sonnet-4-6
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+
+litellm_settings:
+  # Silently drop parameters unsupported by Gemma (thinking, cache_control, etc.)
+  drop_params: true
+  # Retry transient errors
+  num_retries: 2
+  # Log all requests for debugging (set to false in production)
+  set_verbose: false
+
+router_settings:
+  # If Ollama is down, fall back to the OpenRouter variant (if configured)
+  routing_strategy: "simple-shuffle"
+  num_retries: 2
+  timeout: 60
